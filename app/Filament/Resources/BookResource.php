@@ -53,6 +53,7 @@ class BookResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
+            ->defaultSort('created_at', 'DESC')
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
