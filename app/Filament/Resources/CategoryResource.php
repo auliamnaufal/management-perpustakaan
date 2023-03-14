@@ -33,6 +33,7 @@ class CategoryResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('books_count')->counts('books')
+                    ->url(fn(Category $record) => BookResource::getUrl('index', ['tableFilters[category_id][value]' => $record->id]))
             ])
             ->filters([
                 //
