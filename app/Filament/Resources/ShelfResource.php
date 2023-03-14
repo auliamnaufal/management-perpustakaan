@@ -48,4 +48,9 @@ class ShelfResource extends Resource
             'index' => Pages\ManageShelves::route('/'),
         ];
     }
+
+    public static function canDeleteAny(): bool
+    {
+        return false;
+    }
 }
