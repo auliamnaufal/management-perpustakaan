@@ -48,7 +48,8 @@ class BookResource extends Resource
                 Tables\Columns\TextColumn::make('stock')->searchable()
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('shelf_id')->relationship('shelf', 'name')
+                Tables\Filters\SelectFilter::make('shelf_id')->relationship('shelf', 'name')->label('Shelf'),
+                Tables\Filters\SelectFilter::make('category_id')->relationship('category', 'name')->label('Category')
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
