@@ -40,12 +40,12 @@ class BookResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('cover'),
-                Tables\Columns\TextColumn::make('isbn')->label('ISBN'),
-                Tables\Columns\TextColumn::make('title'),
-                Tables\Columns\TextColumn::make('author'),
-                Tables\Columns\TextColumn::make('shelf.name'),
-                Tables\Columns\TextColumn::make('category.name'),
-                Tables\Columns\TextColumn::make('stock')
+                Tables\Columns\TextColumn::make('isbn')->label('ISBN')->searchable(),
+                Tables\Columns\TextColumn::make('title')->searchable(),
+                Tables\Columns\TextColumn::make('author')->searchable(),
+                Tables\Columns\TextColumn::make('shelf.name')->searchable(),
+                Tables\Columns\TextColumn::make('category.name')->searchable(),
+                Tables\Columns\TextColumn::make('stock')->searchable()
             ])
             ->filters([
                 //
