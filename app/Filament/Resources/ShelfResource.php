@@ -12,6 +12,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Webbingbrasil\FilamentAdvancedFilter\Filters\NumberFilter;
 
 class ShelfResource extends Resource
 {
@@ -35,15 +36,9 @@ class ShelfResource extends Resource
                 Tables\Columns\TextColumn::make('books_count')->counts('books')
                     ->url(fn(Shelf $record) => BookResource::getUrl('index', ['tableFilters[shelf_id][value]' => $record->id]))
             ])
-            ->filters([
-                //
-            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 
