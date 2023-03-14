@@ -12,6 +12,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Webbingbrasil\FilamentAdvancedFilter\Filters\NumberFilter;
 
 class BookResource extends Resource
 {
@@ -49,7 +50,8 @@ class BookResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('shelf_id')->relationship('shelf', 'name')->label('Shelf'),
-                Tables\Filters\SelectFilter::make('category_id')->relationship('category', 'name')->label('Category')
+                Tables\Filters\SelectFilter::make('category_id')->relationship('category', 'name')->label('Category'),
+                NumberFilter::make('stock')
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
