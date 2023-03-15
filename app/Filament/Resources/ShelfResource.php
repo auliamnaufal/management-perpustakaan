@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ShelfResource\Pages;
 use App\Filament\Resources\ShelfResource\RelationManagers;
+use App\Models\Category;
 use App\Models\Shelf;
 use Filament\Forms;
 use Filament\Resources\Form;
@@ -38,7 +39,8 @@ class ShelfResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->visible(fn (Shelf $record): bool => !$record->books()->exists())
             ]);
     }
 

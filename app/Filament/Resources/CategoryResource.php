@@ -5,12 +5,15 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CategoryResource\Pages;
 use App\Filament\Resources\CategoryResource\RelationManagers;
 use App\Models\Category;
+use Filament\Facades\Filament;
 use Filament\Forms;
+use Filament\Pages\Actions\DeleteAction;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CategoryResource extends Resource
@@ -40,7 +43,8 @@ class CategoryResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                 Tables\Actions\DeleteAction::make()
+                    ->visible(fn (Category $record): bool => !$record->books()->exists())
             ]);
     }
 
