@@ -6,6 +6,7 @@ namespace Database\Seeders;
 use App\Models\Book;
 use App\Models\Category;
 use App\Models\Shelf;
+use App\Models\Transaction;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -27,5 +28,7 @@ class DatabaseSeeder extends Seeder
          Shelf::factory(10)->create();
 
          Book::factory(50)->create();
+
+         Transaction::factory(20)->create();
     }
 }
