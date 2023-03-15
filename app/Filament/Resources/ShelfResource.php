@@ -19,7 +19,7 @@ class ShelfResource extends Resource
 {
     protected static ?string $model = Shelf::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-table';
 
     public static function form(Form $form): Form
     {
