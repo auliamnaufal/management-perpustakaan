@@ -23,7 +23,49 @@ class TransactionResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\Wizard::make([
+                    Forms\Components\Wizard\Step::make('Credential')
+                        ->schema([
+                            Forms\Components\TextInput::make('full_name')->maxLength(255)->required(),
+                            Forms\Components\TextInput::make('email')->email(),
+                            Forms\Components\TextInput::make('nisn')->numeric(),
+                            Forms\Components\Select::make('class')->options([
+                                '1' => '1',
+                                '2' => '2',
+                                '3' => '3',
+                            ])
+                        ]),
+                    Forms\Components\Wizard\Step::make('Book Selection')
+                        ->schema([
+                            Forms\Components\Select::make('book_id')
+                                ->relationship('book', 'title')
+                                ->placeholder('Select Book')
+                        ]),
+
+                    Forms\Components\Wizard\Step::make('Duration')
+                        ->schema([
+                            Forms\Components\DateTimePicker::make('pickup_date')
+                                ->autofocus()
+                                ->displayFormat($format = 'F j, Y H:i:s')
+                                ->firstDayOfWeek($day = 1)
+                                ->format($format = 'Y-m-d H:i:s')
+                                ->placeholder('Set pickup time')
+                                ->weekStartsOnMonday()
+                                ->weekStartsOnSunday()
+                                ->withoutSeconds(),
+                            Forms\Components\DateTimePicker::make('return_date')
+                                ->autofocus()
+                                ->displayFormat($format = 'F j, Y H:i:s')
+                                ->firstDayOfWeek($day = 1)
+                                ->format($format = 'Y-m-d H:i:s')
+                                ->placeholder('Set pickup time')
+                                ->weekStartsOnMonday()
+                                ->weekStartsOnSunday()
+                                ->withoutSeconds(),
+                        ]),
+                ])
+                ->columnSpan('full'),
+
             ]);
     }
 
