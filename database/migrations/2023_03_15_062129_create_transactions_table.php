@@ -19,7 +19,7 @@ return new class extends Migration
             $table->enum('class', ['1', '2', '3'])->nullable();
             $table->dateTime('pickup_date');
             $table->dateTime('return_date');
-            $table->dateTime('actual_return_date');
+            $table->dateTime('actual_return_date')->nullable()->default(null);
             $table->foreignId('book_id')->constrained();
             $table->boolean('is_returned')->default(false);
             $table->timestamps();
