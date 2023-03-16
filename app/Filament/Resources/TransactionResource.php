@@ -36,9 +36,9 @@ class TransactionResource extends Resource
                     ->copyable()
                     ->copyMessage('Transaction NISN number copied')
                     ->copyMessageDuration(1500),
-                Tables\Columns\TextColumn::make('class'),
-                Tables\Columns\TextColumn::make('pickup_date'),
-                Tables\Columns\TextColumn::make('return_date'),
+                Tables\Columns\TextColumn::make('class')->sortable(),
+                Tables\Columns\TextColumn::make('pickup_date')->sortable(),
+                Tables\Columns\TextColumn::make('return_date')->sortable(),
                 Tables\Columns\TextColumn::make('book.title')
                     ->url(fn(Transaction $record) => BookResource::getUrl('edit', ['record' => $record->book])),
                 Tables\Columns\BadgeColumn::make('is_returned')
@@ -53,7 +53,7 @@ class TransactionResource extends Resource
                     ->enum([
                         0 => 'Not Returned',
                         1 => 'Returned'
-                    ]),
+                    ])->sortable(),
             ])
             ->filters([
                 //
