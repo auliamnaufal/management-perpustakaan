@@ -100,6 +100,7 @@ class TransactionResource extends Resource
             ->filters([
                 //
             ])
+            ->defaultSort('created_at', 'DESC')
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
