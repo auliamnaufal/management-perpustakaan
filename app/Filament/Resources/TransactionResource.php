@@ -5,7 +5,10 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\TransactionResource\Pages;
 use App\Filament\Resources\TransactionResource\RelationManagers;
 use App\Models\Transaction;
+use App\Models\User;
+use Filament\Facades\Filament;
 use Filament\Forms;
+use Filament\Pages\Actions\Action;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -107,6 +110,24 @@ class TransactionResource extends Resource
             ->defaultSort('created_at', 'DESC')
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('returnBook')
+                    ->icon('heroicon-o-bookmark')
+                    ->action(function (Transaction $record, array $data) {
+                        $record->update([
+                            'actual_return_date' => now(),
+                            'is_returned' => true
+                        ]);
+
+                        $record->book()->update([
+                            'stock' => $record->book->stock + 1
+                        ]);
+
+                        Filament::notify('success', 'Book successfully return');
+                    })
+                    ->requiresConfirmation()
+                    ->modalHeading('Confirm returns of book')
+                    ->modalButton('Yes, confirm')
+                    ->color('success')
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
