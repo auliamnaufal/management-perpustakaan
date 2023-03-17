@@ -15,6 +15,7 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 
 class CategoryResource extends Resource
 {
@@ -47,6 +48,9 @@ class CategoryResource extends Resource
                 Tables\Actions\EditAction::make(),
                  Tables\Actions\DeleteAction::make()
                     ->visible(fn (Category $record): bool => !$record->books()->exists())
+            ])
+            ->headerActions([
+                ExportAction::make('export')
             ]);
     }
 

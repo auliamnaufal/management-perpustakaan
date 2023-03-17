@@ -13,6 +13,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 use Webbingbrasil\FilamentAdvancedFilter\Filters\NumberFilter;
 
 class ShelfResource extends Resource
@@ -43,6 +44,9 @@ class ShelfResource extends Resource
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
                     ->visible(fn (Shelf $record): bool => !$record->books()->exists())
+            ])
+            ->headerActions([
+                ExportAction::make('export')
             ]);
     }
 
