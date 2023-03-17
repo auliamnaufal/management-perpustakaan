@@ -79,15 +79,11 @@ class TransactionResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('full_name')->searchable(),
-                Tables\Columns\TextColumn::make('nisn')
-                    ->copyable()
-                    ->copyMessage('Transaction NISN number copied')
-                    ->copyMessageDuration(1500)->searchable(),
                 Tables\Columns\TextColumn::make('class')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('pickup_date')->sortable(),
-                Tables\Columns\TextColumn::make('return_date')->sortable(),
                 Tables\Columns\TextColumn::make('book.title')
                     ->url(fn(Transaction $record) => BookResource::getUrl('edit', ['record' => $record->book]))->searchable(),
+                Tables\Columns\TextColumn::make('pickup_date')->sortable(),
+                Tables\Columns\TextColumn::make('return_date')->sortable(),
                 Tables\Columns\BadgeColumn::make('is_returned')
                     ->icons([
                         'heroicon-o-x-circle' => 0,
@@ -101,6 +97,10 @@ class TransactionResource extends Resource
                         0 => 'Not Returned',
                         1 => 'Returned'
                     ]),
+                Tables\Columns\TextColumn::make('nisn')
+                    ->copyable()
+                    ->copyMessage('Transaction NISN number copied')
+                    ->copyMessageDuration(1500)->searchable()
             ])
             ->filters([
                 BooleanFilter::make('is_returned')->default(false),
