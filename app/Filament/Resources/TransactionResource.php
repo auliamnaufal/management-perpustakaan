@@ -12,6 +12,8 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Webbingbrasil\FilamentAdvancedFilter\Filters\BooleanFilter;
+use Webbingbrasil\FilamentAdvancedFilter\Filters\DateFilter;
 
 class TransactionResource extends Resource
 {
@@ -73,16 +75,16 @@ class TransactionResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('full_name'),
+                Tables\Columns\TextColumn::make('full_name')->searchable(),
                 Tables\Columns\TextColumn::make('nisn')
                     ->copyable()
                     ->copyMessage('Transaction NISN number copied')
-                    ->copyMessageDuration(1500),
-                Tables\Columns\TextColumn::make('class')->sortable(),
+                    ->copyMessageDuration(1500)->searchable(),
+                Tables\Columns\TextColumn::make('class')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('pickup_date')->sortable(),
                 Tables\Columns\TextColumn::make('return_date')->sortable(),
                 Tables\Columns\TextColumn::make('book.title')
-                    ->url(fn(Transaction $record) => BookResource::getUrl('edit', ['record' => $record->book])),
+                    ->url(fn(Transaction $record) => BookResource::getUrl('edit', ['record' => $record->book]))->searchable(),
                 Tables\Columns\BadgeColumn::make('is_returned')
                     ->icons([
                         'heroicon-o-x-circle' => 0,
@@ -95,10 +97,12 @@ class TransactionResource extends Resource
                     ->enum([
                         0 => 'Not Returned',
                         1 => 'Returned'
-                    ])->sortable(),
+                    ]),
             ])
             ->filters([
-                //
+                BooleanFilter::make('is_returned')->default(false),
+                DateFilter::make('pickup_date'),
+                DateFilter::make('return_date'),
             ])
             ->defaultSort('created_at', 'DESC')
             ->actions([
