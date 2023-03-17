@@ -86,6 +86,7 @@ class TransactionResource extends Resource
                     ->url(fn(Transaction $record) => BookResource::getUrl('edit', ['record' => $record->book]))->searchable(),
                 Tables\Columns\TextColumn::make('pickup_date')->sortable(),
                 Tables\Columns\TextColumn::make('return_date')->sortable(),
+                Tables\Columns\TextColumn::make('actual_return_date')->sortable(),
                 Tables\Columns\BadgeColumn::make('is_returned')
                     ->icons([
                         'heroicon-o-x-circle' => 0,
