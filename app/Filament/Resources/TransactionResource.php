@@ -157,4 +157,9 @@ class TransactionResource extends Resource
             'edit' => Pages\EditTransaction::route('/{record}/edit'),
         ];
     }
+
+    protected static function getNavigationBadge(): ?string
+    {
+        return self::getModel()::where('is_returned', 0)->count();
+    }
 }
