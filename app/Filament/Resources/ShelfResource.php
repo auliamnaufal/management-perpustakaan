@@ -21,6 +21,8 @@ class ShelfResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-table';
 
+    protected static ?string $navigationGroup = 'Book Data';
+
     public static function form(Form $form): Form
     {
         return $form

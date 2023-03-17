@@ -20,6 +20,8 @@ class BookResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
 
+    protected static ?string $navigationGroup = 'Book Data';
+
     public static function form(Form $form): Form
     {
         return $form
