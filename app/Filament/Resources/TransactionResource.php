@@ -133,6 +133,26 @@ class TransactionResource extends Resource
                     ->modalHeading('Confirm returns of book')
                     ->modalButton('Yes, confirm')
                     ->color('success')
+                    ->visible(fn(Transaction $record): bool => (bool)!$record->is_returned),
+                Tables\Actions\Action::make('cancelBook')
+                    ->icon('heroicon-o-x')
+                    ->action(function (Transaction $record, array $data) {
+                        $record->update([
+                            'actual_return_date' => null,
+                            'is_returned' => false
+                        ]);
+
+                        $record->book()->update([
+                            'stock' => $record->book->stock - 1
+                        ]);
+
+                        Filament::notify('success', 'Book return successfully canceled');
+                    })
+                    ->requiresConfirmation()
+                    ->modalHeading('Cancel the return of book?')
+                    ->modalButton('Yes, confirm')
+                    ->color('danger')
+                    ->visible(fn(Transaction $record): bool => (bool)$record->is_returned)
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
