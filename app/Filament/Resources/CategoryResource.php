@@ -15,12 +15,15 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 
 class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-beaker';
+
+    protected static ?string $navigationGroup = 'Book Data';
 
     public static function form(Form $form): Form
     {
@@ -45,6 +48,9 @@ class CategoryResource extends Resource
                 Tables\Actions\EditAction::make(),
                  Tables\Actions\DeleteAction::make()
                     ->visible(fn (Category $record): bool => !$record->books()->exists())
+            ])
+            ->headerActions([
+                ExportAction::make('export')
             ]);
     }
 

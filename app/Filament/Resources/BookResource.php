@@ -12,6 +12,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 use Webbingbrasil\FilamentAdvancedFilter\Filters\NumberFilter;
 
 class BookResource extends Resource
@@ -19,6 +20,8 @@ class BookResource extends Resource
     protected static ?string $model = Book::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
+
+    protected static ?string $navigationGroup = 'Book Data';
 
     public static function form(Form $form): Form
     {
@@ -60,6 +63,9 @@ class BookResource extends Resource
             ->defaultSort('created_at', 'DESC')
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+            ])
+            ->headerActions([
+                ExportAction::make('export')
             ]);
     }
 
