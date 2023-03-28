@@ -10,11 +10,15 @@ class HomeController extends Controller
     public function index()
     {
         return view('books.index', [
-            'books' => Book::all()
+            'books' => Book::with('shelf')->get()
         ]);
     }
 
     public function show($id)
     {
+        dd(Book::with('shelf', 'category')->findOrFail($id));
+        return view('books.index', [
+            'books' => Book::with('shelf')->get()
+        ]);
     }
 }
