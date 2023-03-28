@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use Illuminate\Http\Request;
 
-class HomeController extends Controller
+class BookController extends Controller
 {
     public function index()
     {
@@ -16,9 +16,8 @@ class HomeController extends Controller
 
     public function show($id)
     {
-        dd(Book::with('shelf', 'category')->findOrFail($id));
-        return view('books.index', [
-            'books' => Book::with('shelf')->get()
+        return view('books.show', [
+            'book' => Book::with('shelf', 'category')->findOrFail($id)
         ]);
     }
 }
