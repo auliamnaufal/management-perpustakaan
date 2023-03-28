@@ -10,7 +10,7 @@
                             <a href="{{ route('books.show', ['id' => $book->id]) }}" class="text-decoration-none">
                                 <div class="card border-0 p-2 mb-5">
                                     <div class="card-body">
-                                        <img class="w-100 h-25 img-fluid card-img" src="{{ $book->cover }}"
+                                        <img class="w-100 h-25 img-fluid card-img object-fit-cover" src="{{ $book->cover }}"
                                              alt="{{ $book->title }} cover image">
                                         <h2>{{ $book->title }}</h2>
                                         <p>{{ $book->shelf->name }}</p>
