@@ -15,7 +15,7 @@
                             <p class="lead">{{ $book->shelf->name }}</p>
                         </div>
                         <div class="d-flex justify-content-between align-items-center w-25">
-                            <button class="btn btn-lg btn-success">Request</button>
+                            <button class="btn btn-lg btn-success" onclick="Livewire.emit('openModal', 'request-book-modal')">Request</button>
                             <p class="m-0">Stock: {{ $book->stock }}</p>
                         </div>
                     </div>

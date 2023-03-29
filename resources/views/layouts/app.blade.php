@@ -15,6 +15,9 @@
 
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+
+    @livewireStyles
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body>
     <div id="app">
@@ -77,5 +80,8 @@
             @yield('content')
         </main>
     </div>
+
+    @livewire('livewire-ui-modal')
+    @livewireScripts
 </body>
 </html>
