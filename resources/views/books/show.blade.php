@@ -6,7 +6,7 @@
             <div class="col-md-10">
                 <div class="row">
                     <div class="col-md-4">
-                        <img class="w-100 h-100 img-fluid rounded-1" src="{{ $book->cover }}"
+                        <img class="w-100 h-100 img-fluid rounded-1" src="{{ str_starts_with($book->cover, 'http') ? $book->cover : asset('storage/' . $book->cover)  }}"
                              alt="{{ $book->title }} cover image">
                     </div>
                     <div class="col-md-8 d-flex flex-column justify-content-between">
