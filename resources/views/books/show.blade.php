@@ -30,13 +30,13 @@
                     <strong class="mr-auto">Perpustakaan 👋</strong>
                 </div>
                 <div class="toast-body">
-                    You are successfully logged in
+                    {{ session('success') }}
                 </div>
             </div>
             <script>
                 setTimeout(function () {
                     document.querySelector('.show').classList.remove('show')
-                }, 2000)
+                }, 5000)
             </script>
     @endif
 @endsection

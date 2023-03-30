@@ -24,10 +24,11 @@ class RequestBookModal extends ModalComponent
     public function mount($book) {
         $this->book = Book::findOrFail($book);
         $this->user = auth()->user();
-        $this->isBorrowed = (bool)Transaction::query()
-            ->where('email', $this->user->email)
+        $this->isBorrowed = Transaction::query()
             ->where('book_id', $this->book->id)
-            ->where('is_returned', false);
+            ->where('email', $this->user->email)
+            ->where('is_returned', 0)
+            ->first();
     }
 
     public function render()
@@ -67,6 +68,8 @@ class RequestBookModal extends ModalComponent
             'is_returned' => false
         ]);
 
-        $this->closeModal();
+        session()->flash('success', 'Book borrow successfully requested.');
+        return redirect()->to(route('books.show', ['id' => $this->book->id]));
+
     }
 }

@@ -1,8 +1,9 @@
 @if(isset($user))
+
     @if($isBorrowed)
         <x-modal form-action="requestBook">
             <x-slot name="title">
-                {{ $book->title }} has been borrowed
+                You have requested to borrow {{ $book->title }}
             </x-slot>
 
             <x-slot name="content">
