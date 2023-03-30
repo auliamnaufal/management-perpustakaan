@@ -3,11 +3,11 @@
     @if($isBorrowed)
         <x-modal form-action="requestBook">
             <x-slot name="title">
-                You have requested to borrow {{ $book->title }}
+                You have requested to borrow <strong>{{ $book->title }}</strong>
             </x-slot>
 
             <x-slot name="content">
-                You already requested to borrow this book, please wait for further information.
+                <p class="mt-2">You already requested to borrow this book, please wait for further information.</p>
             </x-slot>
 
             <x-slot name="buttons">
