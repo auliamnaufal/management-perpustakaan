@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Transaction;
+use App\Services\BookService;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
@@ -15,18 +16,10 @@ class BookController extends Controller
         ]);
     }
 
-    public function show($id)
+    public function show(BookService $service, $id)
     {
-        $book = Book::with('shelf', 'category')->findOrFail($id);
-        $isRequested = false;
-
-        if (auth()->check()) {
-            $isRequested = (bool)Transaction::query()
-                ->where('book_id', $book->id)
-                ->where('email', auth()->user()->email)
-                ->where('is_returned', 0)
-                ->first();
-        }
+        $book = $service->findSingleBookWithShelfAndCategory($id);
+        $isRequested = $service->checkIfBookIsRequested($id, auth()->user()->email);
 
         return view('books.show', [
             'book' => $book,
