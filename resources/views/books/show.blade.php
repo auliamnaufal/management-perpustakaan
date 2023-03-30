@@ -15,9 +15,14 @@
                             <p class="lead">{{ $book->shelf->name }}</p>
                         </div>
                         <div class="d-flex justify-content-between align-items-center w-25">
-                            <button class="btn btn-lg btn-success" onclick="Livewire.emit('openModal', 'request-book-modal', {{ json_encode(["book" => $book->id]) }})">Request</button>
+                            <button class="btn btn-success" onclick="Livewire.emit('openModal', 'request-book-modal', {{ json_encode(["book" => $book->id]) }})">Request</button>
                             <p class="m-0">Stock: {{ $book->stock }}</p>
                         </div>
+                        @if (session()->has('success'))
+                            <div class="alert alert-success">
+                                {{ session('success') }}
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

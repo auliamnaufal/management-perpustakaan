@@ -40,11 +40,13 @@
 
     &-content-child {
         display: inline-block;
-        width: 50%;
+        width: 30%;
+        min-width: 350px;
+        max-width: 650px;
         vertical-align: middle;
         background-color: white;
-        border-radius: 20px;
-        text-align: left;
+        border-radius: 5px;
+        text-align: center;
         overflow: hidden;
         box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
         transition: all;
