@@ -22,6 +22,10 @@
                 </div>
             </div>
         </div>
+        <div class="row justify-content-center" style="margin-top: 100px">
+            <h3 class="mb-2">Book Recommendations</h3>
+            <livewire:detail-book-suggestion-list :category-id="$book->category_id" />
+        </div>
     </div>
 
     @if (session()->has('success'))
