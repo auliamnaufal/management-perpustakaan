@@ -18,14 +18,25 @@
                             <button class="btn btn-success" onclick="Livewire.emit('openModal', 'request-book-modal', {{ json_encode(["book" => $book->id]) }})">Request</button>
                             <p class="m-0">Stock: {{ $book->stock }}</p>
                         </div>
-                        @if (session()->has('success'))
-                            <div class="alert alert-success">
-                                {{ session('success') }}
-                            </div>
-                        @endif
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    @if (session()->has('success'))
+            <div class="toast show" style="position: absolute; top: 70px; right: 20px;">
+                <div class="toast-header">
+                    <strong class="mr-auto">Perpustakaan 👋</strong>
+                </div>
+                <div class="toast-body">
+                    You are successfully logged in
+                </div>
+            </div>
+            <script>
+                setTimeout(function () {
+                    document.querySelector('.show').classList.remove('show')
+                }, 2000)
+            </script>
+    @endif
 @endsection
