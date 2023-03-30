@@ -1,6 +1,6 @@
 <x-modal>
     <x-slot name="title">
-        Hello World
+        Request {{ $book->title }}
     </x-slot>
 
     <x-slot name="content">
