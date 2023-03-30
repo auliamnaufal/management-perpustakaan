@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Models\Book;
+use App\Models\Transaction;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 use LivewireUI\Modal\ModalComponent;
@@ -15,6 +16,9 @@ class RequestBookModal extends ModalComponent
     public $email;
     public $password;
 
+    public $pickupDate;
+    public $returnDate;
+
     public function mount($book) {
         $this->book = Book::findOrFail($book);
         $this->user = auth()->user();
@@ -25,13 +29,11 @@ class RequestBookModal extends ModalComponent
         return view('livewire.request-book-modal');
     }
 
-    protected $rules = [
-        'email' => 'required|email',
-        'password' => 'required'
-    ];
-
     public function login() {
-        $this->validate();
+        $this->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
 
         if (Auth::attempt(['email' => $this->email, 'password' => $this->password])) {
             session()->flash('success', 'You logged in successfully');
@@ -40,6 +42,25 @@ class RequestBookModal extends ModalComponent
         } else  {
             session()->flash('error', 'Please insert the correct credentials');
         }
+    }
 
+    public function requestBook() {
+        $this->validate([
+            'pickupDate' => 'required|date',
+            'returnDate' => ['required', 'date', 'after:' . $this->pickupDate]
+        ]);
+
+        Transaction::create([
+            'full_name' => $this->user->name,
+            'email' => $this->user->email,
+            'nisn' => $this->user->student->nisn,
+            'class' => $this->user->student->class,
+            'pickup_date' => $this->pickupDate,
+            'return_date' => $this->returnDate,
+            'book_id' => $this->book->id,
+            'is_returned' => false
+        ]);
+
+        $this->closeModal();
     }
 }
