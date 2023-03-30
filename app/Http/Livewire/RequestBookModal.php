@@ -19,9 +19,15 @@ class RequestBookModal extends ModalComponent
     public $pickupDate;
     public $returnDate;
 
+    public $isBorrowed = false;
+
     public function mount($book) {
         $this->book = Book::findOrFail($book);
         $this->user = auth()->user();
+        $this->isBorrowed = (bool)Transaction::query()
+            ->where('email', $this->user->email)
+            ->where('book_id', $this->book->id)
+            ->where('is_returned', false);
     }
 
     public function render()
