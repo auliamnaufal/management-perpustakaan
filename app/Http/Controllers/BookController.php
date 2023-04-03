@@ -19,7 +19,7 @@ class BookController extends Controller
     public function show(BookService $service, $id)
     {
         $book = $service->findSingleBookWithShelfAndCategory($id);
-        $isRequested = $service->checkIfBookIsRequested($id, auth()->user()->email);
+        $isRequested = $service->checkIfBookIsRequested($id);
 
         return view('books.show', [
             'book' => $book,

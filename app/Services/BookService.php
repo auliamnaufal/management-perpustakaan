@@ -13,14 +13,14 @@ class BookService
         return Book::with('shelf', 'category')->findOrFail($bookId);
     }
 
-    public function checkIfBookIsRequested(int $bookId, string $email): bool
+    public function checkIfBookIsRequested(int $bookId): bool
     {
         $isRequested = false;
 
         if (auth()->check()) {
             $isRequested = (bool)Transaction::query()
                 ->where('book_id', $bookId)
-                ->where('email', $email)
+                ->where('email', auth()->user()->email)
                 ->where('is_returned', 0)
                 ->first();
         }
