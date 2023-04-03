@@ -9,6 +9,7 @@ use App\Models\User;
 use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Pages\Actions\Action;
+use Filament\Pages\Actions\ActionGroup;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -73,7 +74,7 @@ class TransactionResource extends Resource
                                 ->withoutSeconds(),
                         ]),
                 ])
-                ->columnSpan('full'),
+                    ->columnSpan('full'),
 
             ]);
     }
@@ -114,45 +115,59 @@ class TransactionResource extends Resource
             ])
             ->defaultSort('created_at', 'DESC')
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\Action::make('returnBook')
-                    ->icon('heroicon-o-bookmark')
-                    ->action(function (Transaction $record, array $data) {
-                        $record->update([
-                            'actual_return_date' => now(),
-                            'is_returned' => true
-                        ]);
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\Action::make('returnBook')
+                        ->icon('heroicon-o-bookmark')
+                        ->action(function (Transaction $record, array $data) {
+                            $record->update([
+                                'actual_return_date' => now(),
+                                'is_returned' => true
+                            ]);
 
-                        $record->book()->update([
-                            'stock' => $record->book->stock + 1
-                        ]);
+                            $record->book()->update([
+                                'stock' => $record->book->stock + 1
+                            ]);
 
-                        Filament::notify('success', 'Book successfully return');
-                    })
-                    ->requiresConfirmation()
-                    ->modalHeading('Confirm returns of book')
-                    ->modalButton('Yes, confirm')
-                    ->color('success')
-                    ->visible(fn(Transaction $record): bool => (bool)!$record->is_returned),
-                Tables\Actions\Action::make('cancelBook')
-                    ->icon('heroicon-o-x')
-                    ->action(function (Transaction $record, array $data) {
-                        $record->update([
-                            'actual_return_date' => null,
-                            'is_returned' => false
-                        ]);
+                            Filament::notify('success', 'Book successfully return');
+                        })
+                        ->requiresConfirmation()
+                        ->modalHeading('Confirm returns of book')
+                        ->modalButton('Yes, confirm')
+                        ->color('success')
+                        ->visible(fn(Transaction $record): bool => (bool)!$record->is_returned),
 
-                        $record->book()->update([
-                            'stock' => $record->book->stock - 1
-                        ]);
+                    Tables\Actions\Action::make('declineBook')
+                        ->icon('heroicon-o-x')
+                        ->action(function (Transaction $record, array $data) {
+                            
+                        })
+                        ->requiresConfirmation()
+                        ->modalHeading('Confirm returns of book')
+                        ->modalButton('Yes, confirm')
+                        ->color('danger')
+                        ->visible(fn(Transaction $record): bool => (bool)!$record->is_returned),
 
-                        Filament::notify('success', 'Book return successfully canceled');
-                    })
-                    ->requiresConfirmation()
-                    ->modalHeading('Cancel the return of book?')
-                    ->modalButton('Yes, confirm')
-                    ->color('danger')
-                    ->visible(fn(Transaction $record): bool => (bool)$record->is_returned)
+                    Tables\Actions\Action::make('cancelBook')
+                        ->icon('heroicon-o-x')
+                        ->action(function (Transaction $record, array $data) {
+                            $record->update([
+                                'actual_return_date' => null,
+                                'is_returned' => false
+                            ]);
+
+                            $record->book()->update([
+                                'stock' => $record->book->stock - 1
+                            ]);
+
+                            Filament::notify('success', 'Book return successfully canceled');
+                        })
+                        ->requiresConfirmation()
+                        ->modalHeading('Cancel the return of book?')
+                        ->modalButton('Yes, confirm')
+                        ->color('danger')
+                        ->visible(fn(Transaction $record): bool => (bool)$record->is_returned)
+                ])
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
