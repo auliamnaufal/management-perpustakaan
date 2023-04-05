@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\BookTransactionEnum;
 use App\Filament\Resources\TransactionResource\Pages;
 use App\Filament\Resources\TransactionResource\RelationManagers;
 use App\Models\Transaction;
@@ -111,9 +112,9 @@ class TransactionResource extends Resource
                         'heroicon-o-check-circle' => 'approved',
                     ])
                     ->colors([
-                        'danger' => 'rejected',
-                        'secondary' =>'pending',
-                        'success' => 'approved',
+                        'danger' => BookTransactionEnum::fromName('Rejected'),
+                        'secondary' => BookTransactionEnum::fromName('Pending'),
+                        'success' => BookTransactionEnum::fromName('Approved'),
                     ])
                     ->enum([
                         'rejected' => 'Rejected',
@@ -150,14 +151,14 @@ class TransactionResource extends Resource
                         ->modalHeading('Approve book?')
                         ->modalButton('Yes, confirm')
                         ->color('success')
-                        ->visible(fn(Transaction $record): bool => (bool)!$record->is_returned && $record->is_approved == 'pending'),
+                        ->visible(fn(Transaction $record): bool => (bool)!$record->is_returned && $record->is_approved == BookTransactionEnum::fromName('Pending')),
 
                     // ** Reject Book ** //
                     Tables\Actions\Action::make('rejectBook')
                         ->icon('heroicon-o-x')
                         ->action(function (Transaction $record, array $data) {
                             $record->update([
-                                'is_approved' => 'rejected'
+                                'is_approved' => BookTransactionEnum::fromName('Rejected')
                             ]);
 
                             Filament::notify('success', $record->book->title . 'has been rejected');
@@ -166,7 +167,7 @@ class TransactionResource extends Resource
                         ->modalHeading('Reject book?')
                         ->modalButton('Yes, reject')
                         ->color('danger')
-                        ->visible(fn(Transaction $record): bool => (bool)!$record->is_returned && $record->is_approved == 'pending'),
+                        ->visible(fn(Transaction $record): bool => (bool)!$record->is_returned && $record->is_approved == BookTransactionEnum::fromName('Pending')),
 
                     // ** Pickup Book ** //
                     Tables\Actions\Action::make('pickupBook')
@@ -182,7 +183,7 @@ class TransactionResource extends Resource
                         ->modalHeading('Confirm book pickup')
                         ->modalButton('Yes, confirm')
                         ->color('success')
-                        ->visible(fn(Transaction $record): bool => (bool)!$record->is_returned && $record->is_approved == 'approved' && (bool)!$record->actual_pickup_date),
+                        ->visible(fn(Transaction $record): bool => (bool)!$record->is_returned && $record->is_approved == BookTransactionEnum::fromName('Approved') && (bool)!$record->actual_pickup_date),
 
                     // ** Return Book ** //
                     Tables\Actions\Action::make('returnBook')
@@ -203,7 +204,7 @@ class TransactionResource extends Resource
                         ->modalHeading('Confirm returns of book')
                         ->modalButton('Yes, confirm')
                         ->color('success')
-                        ->visible(fn(Transaction $record): bool => (bool)!$record->is_returned && $record->is_approved == 'approved' && (bool)$record->actual_pickup_date),
+                        ->visible(fn(Transaction $record): bool => (bool)!$record->is_returned && $record->is_approved == BookTransactionEnum::fromName('Approved') && (bool)$record->actual_pickup_date),
 
                     // ** Cancel Book ** //
                     Tables\Actions\Action::make('cancelBook')
@@ -224,7 +225,7 @@ class TransactionResource extends Resource
                         ->modalHeading('Cancel the return of book?')
                         ->modalButton('Yes, confirm')
                         ->color('danger')
-                        ->visible(fn(Transaction $record): bool => (bool)!$record->is_returned && $record->is_approved == 'approved')
+                        ->visible(fn(Transaction $record): bool => (bool)!$record->is_returned && $record->is_approved == BookTransactionEnum::fromName('Approved'))
                 ])
             ])
             ->bulkActions([
