@@ -8,13 +8,23 @@ use Livewire\Component;
 class BookList extends Component
 {
     public $books;
+    public $query;
 
-    public function mount() {
+    public function mount()
+    {
         $this->books = Book::all();
     }
 
-  public function render()
-  {
-    return view('livewire.book-list');
-  }
+    public function updatedQuery() {
+        $this->books = Book::query()
+            ->where('title', 'like', '%' . $this->query . '%')
+            ->get();
+
+        info(json_encode($this->books));
+    }
+
+    public function render()
+    {
+        return view('livewire.book-list');
+    }
 }
