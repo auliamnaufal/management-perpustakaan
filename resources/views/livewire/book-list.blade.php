@@ -11,5 +11,9 @@
                 <x-book-card-item :book="$book"/>
             </div>
         @endforeach
+
+        <div class="col-2 offset-10">
+            {{ $books->links('pagination::bootstrap-4') }}
+        </div>
     </div>
 </div>
