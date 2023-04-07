@@ -59,7 +59,12 @@
                             </div>
 
                             <div class="col-md-4">
-                                <input id="class" type="number" class="form-control @error('class') is-invalid @enderror" name="class" value="{{ old('class') }}" required placeholder="Class">
+                                <select name="class" id="class" class="form-control  @error('class') is-invalid @enderror">
+                                    <option value="" disabled selected>Class</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
 
                                 @error('class')
                                 <span class="invalid-feedback" role="alert">
