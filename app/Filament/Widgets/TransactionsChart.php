@@ -9,7 +9,7 @@ use Flowframe\Trend\TrendValue;
 
 class TransactionsChart extends LineChartWidget
 {
-    protected static ?string $heading = 'Transactions Chart';
+    protected static ?string $heading = 'Transactions Finished Chart';
 
     protected int | string | array $columnSpan = 'full';
 
