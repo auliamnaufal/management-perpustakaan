@@ -2,12 +2,6 @@
 
 @section('content')
     <div class="container">
-        <div class="row justify-content-center">
-            @foreach($books as $book)
-                <div class="col-lg-3 col-md-4 col-sm-6">
-                    <x-book-card-item :book="$book" />
-                </div>
-            @endforeach
-        </div>
+        <livewire:book-list />
     </div>
 @endsection
