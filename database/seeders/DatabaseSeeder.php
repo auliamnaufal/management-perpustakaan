@@ -30,8 +30,8 @@ class DatabaseSeeder extends Seeder
 
          Shelf::factory(10)->create();
 
-         Book::factory(50)->create();
+         Book::factory(10)->create();
 
-         Transaction::factory(20)->create();
+         Transaction::factory(15)->create();
     }
 }
