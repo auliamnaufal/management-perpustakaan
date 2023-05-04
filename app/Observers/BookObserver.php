@@ -20,6 +20,7 @@ class BookObserver
      */
     public function updated(Book $book): void
     {
+        info(json_encode($book));
         if ($book->isDirty('cover')) {
             Storage::disk('public')->delete($book->getOriginal('cover'));
         }

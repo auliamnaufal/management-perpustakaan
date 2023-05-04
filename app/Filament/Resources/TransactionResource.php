@@ -49,7 +49,8 @@ class TransactionResource extends Resource
                     Forms\Components\Wizard\Step::make('Book Selection')
                         ->schema([
                             Forms\Components\Select::make('book_id')
-                                ->relationship('book', 'title')
+                            ->multiple()
+                                ->relationship('books', 'title')
                                 ->placeholder('Select Book')
                         ]),
 
@@ -86,25 +87,10 @@ class TransactionResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('full_name')->searchable(),
                 Tables\Columns\TextColumn::make('class')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('book.title')
-                    ->url(fn(Transaction $record) => BookResource::getUrl('edit', ['record' => $record->book]))->searchable(),
                 Tables\Columns\TextColumn::make('pickup_date')->sortable(),
-                Tables\Columns\TextColumn::make('actual_pickup_date')->sortable(),
+                Tables\Columns\BadgeColumn::make('actual_pickup_date')->sortable(),
                 Tables\Columns\TextColumn::make('return_date')->sortable(),
-                Tables\Columns\TextColumn::make('actual_return_date')->sortable(),
-                Tables\Columns\BadgeColumn::make('is_returned')
-                    ->icons([
-                        'heroicon-o-x-circle' => 0,
-                        'heroicon-o-check-circle' => 1,
-                    ])
-                    ->colors([
-                        'danger' => 0,
-                        'success' => 1,
-                    ])
-                    ->enum([
-                        0 => 'Not Returned',
-                        1 => 'Returned'
-                    ]),
+                Tables\Columns\BadgeColumn::make('actual_return_date')->sortable(),
                 Tables\Columns\BadgeColumn::make('is_approved')
                     ->icons([
                         'heroicon-o-x-circle' => 'rejected',
@@ -120,6 +106,19 @@ class TransactionResource extends Resource
                         'rejected' => 'Rejected',
                         'pending' => 'Pending',
                         'approved' => 'Approved'
+                    ]),
+                Tables\Columns\BadgeColumn::make('is_returned')
+                    ->icons([
+                        'heroicon-o-x-circle' => 0,
+                        'heroicon-o-check-circle' => 1,
+                    ])
+                    ->colors([
+                        'danger' => 0,
+                        'success' => 1,
+                    ])
+                    ->enum([
+                        0 => 'Not Returned',
+                        1 => 'Returned'
                     ]),
                 Tables\Columns\TextColumn::make('nisn')
                     ->copyable()
@@ -144,7 +143,7 @@ class TransactionResource extends Resource
                                 'is_approved' => 'approved'
                             ]);
 
-                            Filament::notify('success', $record->book->title . 'has been approved');
+                            Filament::notify('success', $record->full_name . ' request has been approved');
 
                         })
                         ->requiresConfirmation()
@@ -161,7 +160,7 @@ class TransactionResource extends Resource
                                 'is_approved' => BookTransactionEnum::fromName('Rejected')
                             ]);
 
-                            Filament::notify('success', $record->book->title . 'has been rejected');
+                            Filament::notify('success', $record->full_name . ' request has been rejected');
                         })
                         ->requiresConfirmation()
                         ->modalHeading('Reject book?')
@@ -177,7 +176,7 @@ class TransactionResource extends Resource
                                 'actual_pickup_date' => now()
                             ]);
 
-                            Filament::notify('success', $record->book->title . 'has been rejected');
+                            Filament::notify('success', $record->full_name . ' request has been picked up');
                         })
                         ->requiresConfirmation()
                         ->modalHeading('Confirm book pickup')
@@ -194,9 +193,14 @@ class TransactionResource extends Resource
                                 'is_returned' => true
                             ]);
 
-                            $record->book()->update([
-                                'stock' => $record->book->stock + 1
-                            ]);
+                            $books = $record->books;
+
+                            foreach ($books as $book) {
+                                $book->update([
+                                    'stock' => $book->stock + 1
+                                ]);
+
+                            }
 
                             Filament::notify('success', 'Book successfully return');
                         })
@@ -215,9 +219,14 @@ class TransactionResource extends Resource
                                 'is_returned' => false
                             ]);
 
-                            $record->book()->update([
-                                'stock' => $record->book->stock + 1
-                            ]);
+                            $books = $record->books;
+
+                            foreach ($books as $book) {
+                                $book->update([
+                                    'stock' => $book->stock + 1
+                                ]);
+
+                            }
 
                             Filament::notify('danger', 'Book return canceled');
                         })

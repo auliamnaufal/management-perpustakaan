@@ -10,15 +10,20 @@ class CreateTransaction extends CreateRecord
 {
     protected static string $resource = TransactionResource::class;
 
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
     protected function afterCreate(): void
     {
-        info($this->record->book->stock);
+        $selectedBooks = $this->record->books;
 
-        $this->record->book->update([
-            'stock' => $this->record->book->stock - 1,
-        ]);
-
-        info($this->record->book->stock);
+        foreach ($selectedBooks as $book) {
+            $book->update([
+                'stock' => $book->stock - 1,
+            ]);
+        }
 
     }
 }
