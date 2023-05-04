@@ -20,17 +20,14 @@ class RequestBookModal extends ModalComponent
     public $returnDate;
 
     public $isBorrowed = false;
+    public $isRequested;
 
     public function mount($book) {
         $this->book = Book::findOrFail($book);
         $this->user = auth()->user();
 
         if (auth()->check()) {
-            $this->isBorrowed = Transaction::query()
-                ->where('book_id', $this->book->id)
-                ->where('email', $this->user->email)
-                ->where('is_returned', 0)
-                ->first();
+            $this->isBorrowed = $this->isRequested;
 
         }
     }
@@ -61,16 +58,17 @@ class RequestBookModal extends ModalComponent
             'returnDate' => ['required', 'date', 'after:' . $this->pickupDate]
         ]);
 
-        Transaction::create([
+        $transaction = Transaction::create([
             'full_name' => $this->user->name,
             'email' => $this->user->email,
             'nisn' => $this->user->student->nisn,
             'class' => $this->user->student->class,
             'pickup_date' => $this->pickupDate,
             'return_date' => $this->returnDate,
-            'book_id' => $this->book->id,
             'is_returned' => false
         ]);
+
+        $transaction->books()->attach([$this->book->id]);
 
         session()->flash('success', 'Book borrow successfully requested.');
         return redirect()->to(route('books.show', ['id' => $this->book->id]));

@@ -19,10 +19,13 @@ class BookService
 
         if (auth()->check()) {
             $isRequested = (bool)Transaction::query()
-                ->where('book_id', $bookId)
                 ->where('email', auth()->user()->email)
                 ->where('is_returned', 0)
-                ->first();
+                ->whereHas('books', function ($q) use ($bookId) {
+                    $q->where('book_id', $bookId);
+                })
+                ->count();
+
         }
 
         return $isRequested;
