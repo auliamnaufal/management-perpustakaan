@@ -21,7 +21,7 @@ return new class extends Migration
             $table->dateTime('actual_pickup_date')->nullable()->default(null);
             $table->dateTime('return_date');
             $table->dateTime('actual_return_date')->nullable()->default(null);
-            $table->foreignId('book_id')->constrained();
+//            $table->foreignId('book_id')->constrained();
             $table->boolean('is_returned')->default(false);
             $table->enum('is_approved', ['approved', 'pending', 'rejected'])->default('pending');
             $table->timestamps();
