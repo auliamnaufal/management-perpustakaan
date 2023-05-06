@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('nisn', 20);
             $table->smallInteger('school_year');
-            $table->smallInteger('class');
+            $table->enum('class', [1, 2, 3])->default(null)->nullable();
             $table->timestamps();
         });
     }

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Transaction;
+use App\Services\BookService;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
@@ -14,10 +16,14 @@ class BookController extends Controller
         ]);
     }
 
-    public function show($id)
+    public function show(BookService $service, $id)
     {
+        $book = $service->findSingleBookWithShelfAndCategory($id);
+        $isRequested = $service->checkIfBookIsRequested($id);
+
         return view('books.show', [
-            'book' => Book::with('shelf', 'category')->findOrFail($id)
+            'book' => $book,
+            'isRequested' => $isRequested
         ]);
     }
 }

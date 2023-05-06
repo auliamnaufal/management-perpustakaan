@@ -24,7 +24,7 @@ class TransactionFactory extends Factory
             'class' => fake()->randomElement(['1', '2', '3']),
             'pickup_date' => fake()->dateTime(),
             'return_date' => fake()->dateTime(),
-            'book_id' => Book::all()->random()->id,
+//            'book_id' => Book::all()->random()->id,
             'is_returned' => fake()->boolean()
         ];
     }

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\BookTransactionEnum;
 use App\Filament\Resources\TransactionResource\Pages;
 use App\Filament\Resources\TransactionResource\RelationManagers;
 use App\Models\Transaction;
@@ -9,6 +10,8 @@ use App\Models\User;
 use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Pages\Actions\Action;
+use Filament\Pages\Actions\ActionGroup;
+use Filament\Pages\Actions\ViewAction;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -47,7 +50,8 @@ class TransactionResource extends Resource
                     Forms\Components\Wizard\Step::make('Book Selection')
                         ->schema([
                             Forms\Components\Select::make('book_id')
-                                ->relationship('book', 'title')
+                            ->multiple()
+                                ->relationship('books', 'title')
                                 ->placeholder('Select Book')
                         ]),
 
@@ -73,7 +77,7 @@ class TransactionResource extends Resource
                                 ->withoutSeconds(),
                         ]),
                 ])
-                ->columnSpan('full'),
+                    ->columnSpan('full'),
 
             ]);
     }
@@ -84,11 +88,26 @@ class TransactionResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('full_name')->searchable(),
                 Tables\Columns\TextColumn::make('class')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('book.title')
-                    ->url(fn(Transaction $record) => BookResource::getUrl('edit', ['record' => $record->book]))->searchable(),
                 Tables\Columns\TextColumn::make('pickup_date')->sortable(),
+                Tables\Columns\BadgeColumn::make('actual_pickup_date')->sortable(),
                 Tables\Columns\TextColumn::make('return_date')->sortable(),
-                Tables\Columns\TextColumn::make('actual_return_date')->sortable(),
+                Tables\Columns\BadgeColumn::make('actual_return_date')->sortable(),
+                Tables\Columns\BadgeColumn::make('is_approved')
+                    ->icons([
+                        'heroicon-o-x-circle' => 'rejected',
+                        'heroicon-o-exclamation-circle' => 'pending',
+                        'heroicon-o-check-circle' => 'approved',
+                    ])
+                    ->colors([
+                        'danger' => BookTransactionEnum::fromName('Rejected'),
+                        'secondary' => BookTransactionEnum::fromName('Pending'),
+                        'success' => BookTransactionEnum::fromName('Approved'),
+                    ])
+                    ->enum([
+                        'rejected' => 'Rejected',
+                        'pending' => 'Pending',
+                        'approved' => 'Approved'
+                    ]),
                 Tables\Columns\BadgeColumn::make('is_returned')
                     ->icons([
                         'heroicon-o-x-circle' => 0,
@@ -114,45 +133,111 @@ class TransactionResource extends Resource
             ])
             ->defaultSort('created_at', 'DESC')
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\Action::make('returnBook')
-                    ->icon('heroicon-o-bookmark')
-                    ->action(function (Transaction $record, array $data) {
-                        $record->update([
-                            'actual_return_date' => now(),
-                            'is_returned' => true
-                        ]);
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
 
-                        $record->book()->update([
-                            'stock' => $record->book->stock + 1
-                        ]);
+                    // ** Approve Book ** //
+                    Tables\Actions\Action::make('approveBook')
+                        ->icon('heroicon-o-check')
+                        ->action(function (Transaction $record, array $data) {
+                            $record->update([
+                                'is_approved' => 'approved'
+                            ]);
 
-                        Filament::notify('success', 'Book successfully return');
-                    })
-                    ->requiresConfirmation()
-                    ->modalHeading('Confirm returns of book')
-                    ->modalButton('Yes, confirm')
-                    ->color('success')
-                    ->visible(fn(Transaction $record): bool => (bool)!$record->is_returned),
-                Tables\Actions\Action::make('cancelBook')
-                    ->icon('heroicon-o-x')
-                    ->action(function (Transaction $record, array $data) {
-                        $record->update([
-                            'actual_return_date' => null,
-                            'is_returned' => false
-                        ]);
+                            Filament::notify('success', $record->full_name . ' request has been approved');
 
-                        $record->book()->update([
-                            'stock' => $record->book->stock - 1
-                        ]);
+                        })
+                        ->requiresConfirmation()
+                        ->modalHeading('Approve book?')
+                        ->modalButton('Yes, confirm')
+                        ->color('success')
+                        ->visible(fn(Transaction $record): bool => (bool)!$record->is_returned && $record->is_approved == BookTransactionEnum::fromName('Pending')),
 
-                        Filament::notify('success', 'Book return successfully canceled');
-                    })
-                    ->requiresConfirmation()
-                    ->modalHeading('Cancel the return of book?')
-                    ->modalButton('Yes, confirm')
-                    ->color('danger')
-                    ->visible(fn(Transaction $record): bool => (bool)$record->is_returned)
+                    // ** Reject Book ** //
+                    Tables\Actions\Action::make('rejectBook')
+                        ->icon('heroicon-o-x')
+                        ->action(function (Transaction $record, array $data) {
+                            $record->update([
+                                'is_approved' => BookTransactionEnum::fromName('Rejected')
+                            ]);
+
+                            Filament::notify('success', $record->full_name . ' request has been rejected');
+                        })
+                        ->requiresConfirmation()
+                        ->modalHeading('Reject book?')
+                        ->modalButton('Yes, reject')
+                        ->color('danger')
+                        ->visible(fn(Transaction $record): bool => (bool)!$record->is_returned && $record->is_approved == BookTransactionEnum::fromName('Pending')),
+
+                    // ** Pickup Book ** //
+                    Tables\Actions\Action::make('pickupBook')
+                        ->icon('heroicon-o-inbox')
+                        ->action(function (Transaction $record, array $data) {
+                            $record->update([
+                                'actual_pickup_date' => now()
+                            ]);
+
+                            Filament::notify('success', $record->full_name . ' request has been picked up');
+                        })
+                        ->requiresConfirmation()
+                        ->modalHeading('Confirm book pickup')
+                        ->modalButton('Yes, confirm')
+                        ->color('success')
+                        ->visible(fn(Transaction $record): bool => (bool)!$record->is_returned && $record->is_approved == BookTransactionEnum::fromName('Approved') && (bool)!$record->actual_pickup_date),
+
+                    // ** Return Book ** //
+                    Tables\Actions\Action::make('returnBook')
+                        ->icon('heroicon-o-bookmark')
+                        ->action(function (Transaction $record, array $data) {
+                            $record->update([
+                                'actual_return_date' => now(),
+                                'is_returned' => true
+                            ]);
+
+                            $books = $record->books;
+
+                            foreach ($books as $book) {
+                                $book->update([
+                                    'stock' => $book->stock + 1
+                                ]);
+
+                            }
+
+                            Filament::notify('success', 'Book successfully return');
+                        })
+                        ->requiresConfirmation()
+                        ->modalHeading('Confirm returns of book')
+                        ->modalButton('Yes, confirm')
+                        ->color('success')
+                        ->visible(fn(Transaction $record): bool => (bool)!$record->is_returned && $record->is_approved == BookTransactionEnum::fromName('Approved') && (bool)$record->actual_pickup_date),
+
+                    // ** Cancel Book ** //
+                    Tables\Actions\Action::make('cancelBook')
+                        ->icon('heroicon-o-x')
+                        ->action(function (Transaction $record, array $data) {
+                            $record->update([
+                                'actual_return_date' => null,
+                                'is_returned' => false
+                            ]);
+
+                            $books = $record->books;
+
+                            foreach ($books as $book) {
+                                $book->update([
+                                    'stock' => $book->stock + 1
+                                ]);
+
+                            }
+
+                            Filament::notify('danger', 'Book return canceled');
+                        })
+                        ->requiresConfirmation()
+                        ->modalHeading('Cancel the return of book?')
+                        ->modalButton('Yes, confirm')
+                        ->color('danger')
+                        ->visible(fn(Transaction $record): bool => (bool)!$record->is_returned && $record->is_approved == BookTransactionEnum::fromName('Approved'))
+                ])
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
@@ -174,6 +259,7 @@ class TransactionResource extends Resource
         return [
             'index' => Pages\ListTransactions::route('/'),
             'create' => Pages\CreateTransaction::route('/create'),
+            'view' => Pages\ViewTransaction::route('/{record}'),
             'edit' => Pages\EditTransaction::route('/{record}/edit'),
         ];
     }

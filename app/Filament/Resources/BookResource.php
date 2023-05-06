@@ -27,7 +27,6 @@ class BookResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('isbn')->numeric()->rules(['digits_between:9,13']),
                 Forms\Components\TextInput::make('title')->required(),
                 Forms\Components\TextInput::make('author'),
                 Forms\Components\Select::make('shelf_id')
@@ -35,7 +34,8 @@ class BookResource extends Resource
                 Forms\Components\Select::make('category_id')
                     ->relationship('category', 'name'),
                 Forms\Components\TextInput::make('stock')->numeric()->required(),
-                Forms\Components\FileUpload::make('cover')
+                Forms\Components\FileUpload::make('cover'),
+                Forms\Components\TextInput::make('isbn')->numeric()->rules(['digits_between:9,13'])
             ]);
     }
 

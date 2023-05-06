@@ -1,0 +1,81 @@
+.modal-livewire {
+    z-index: 10;
+    overflow-y: auto;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+     &-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 20px 20px 50px;
+        text-align: center;
+    }
+
+    &-content-props {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        transition: all;
+    }
+
+    &-content-inside {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: rgb(107 114 128);
+    }
+
+    &-content-span {
+        display: none;
+    }
+
+    &-content-child {
+        display: inline-block;
+        width: 30%;
+        min-width: 350px;
+        max-width: 650px;
+        vertical-align: middle;
+        background-color: white;
+        border-radius: 5px;
+        text-align: center;
+        overflow: hidden;
+        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        transition: all;
+        z-index: 100;
+    }
+}
+
+.ease-in {
+    transition-timing-function: ease-in;
+}
+
+.ease-out {
+    transition-timing-function: ease-out;
+}
+
+.duration-200 {
+    transition-duration: 200ms;
+}
+
+.duration-300 {
+    transition-duration: 300ms;
+}
+
+.translate-y-0 {
+    transform: translateY(0px);
+}
+
+.translate-y-4 {
+    transform: translateY(1rem);
+}
+
+

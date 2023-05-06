@@ -11,7 +11,7 @@ class Transaction extends Model
 
     protected $guarded = [];
 
-    public function book() {
-        return $this->belongsTo(Book::class);
+    public function books() {
+        return $this->belongsToMany(Book::class);
     }
 }
