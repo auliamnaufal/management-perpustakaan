@@ -41,13 +41,13 @@ class TransactionResource extends Resource
                     Forms\Components\Wizard\Step::make('Credential')
                         ->schema([
                             Forms\Components\TextInput::make('full_name')->maxLength(255)->required(),
-                            Forms\Components\TextInput::make('email')->email(),
-                            Forms\Components\TextInput::make('nisn')->numeric(),
+                            Forms\Components\TextInput::make('email')->email()->required(),
+                            Forms\Components\TextInput::make('nisn')->numeric()->required(),
                             Forms\Components\Select::make('class')->options([
                                 '1' => '1',
                                 '2' => '2',
                                 '3' => '3',
-                            ])
+                            ])->required()
                         ]),
                     Forms\Components\Wizard\Step::make('Book Selection')
                         ->schema([
@@ -68,7 +68,8 @@ class TransactionResource extends Resource
                                 ->placeholder('Set pickup time')
                                 ->weekStartsOnMonday()
                                 ->weekStartsOnSunday()
-                                ->withoutSeconds(),
+                                ->withoutSeconds()
+                                ->required(),
                             Forms\Components\DateTimePicker::make('return_date')
                                 ->autofocus()
                                 ->displayFormat($format = 'F j, Y H:i:s')
@@ -77,7 +78,8 @@ class TransactionResource extends Resource
                                 ->placeholder('Set pickup time')
                                 ->weekStartsOnMonday()
                                 ->weekStartsOnSunday()
-                                ->withoutSeconds(),
+                                ->withoutSeconds()
+                                ->required(),
                         ]),
                 ])
                     ->columnSpan('full'),
