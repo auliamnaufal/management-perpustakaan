@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Enums\BookTransactionEnum;
 use App\Filament\Resources\TransactionResource\Pages;
 use App\Filament\Resources\TransactionResource\RelationManagers;
+use App\Models\Book;
 use App\Models\Transaction;
 use App\Models\User;
 use Filament\Facades\Filament;
@@ -17,6 +18,7 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
@@ -50,9 +52,10 @@ class TransactionResource extends Resource
                     Forms\Components\Wizard\Step::make('Book Selection')
                         ->schema([
                             Forms\Components\Select::make('book_id')
-                            ->multiple()
-                                ->relationship('books', 'title')
-                                ->placeholder('Select Book')
+                                ->multiple()
+                                ->relationship('books', 'isbn')
+                                ->getOptionLabelFromRecordUsing(fn(Book $record) => "{$record->title} - {$record->isbn}")
+                                ->placeholder('Select Book by ISBN'),
                         ]),
 
                     Forms\Components\Wizard\Step::make('Duration')
