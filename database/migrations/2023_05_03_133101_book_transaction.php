@@ -11,8 +11,8 @@ class BookTransaction extends Migration
     Schema::create('book_transaction', function (Blueprint $table) {
       $table->id();
 
-      $table->foreignId('book_id')->constrained();
-      $table->foreignId('transaction_id')->constrained();
+      $table->foreignId('book_id')->constrained()->cascadeOnDelete();
+      $table->foreignId('transaction_id')->constrained()->cascadeOnDelete();
 
       $table->timestamps();
     });

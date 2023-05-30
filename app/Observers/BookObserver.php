@@ -34,6 +34,10 @@ class BookObserver
         if (! is_null($book->cover)) {
             Storage::disk('public')->delete($book->cover);
         }
+
+        if (! $book->transactions) {
+            $book->transactions()->detach();
+        }
     }
 
     /**
