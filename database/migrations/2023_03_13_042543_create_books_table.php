@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('title');
             $table->string('cover')->nullable();
             $table->string('author');
-            $table->foreignId('shelf_id')->nullable()->constrained();
-            $table->foreignId('category_id')->nullable()->constrained();
+            $table->foreignId('shelf_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('category_id')->nullable()->constrained()->cascadeOnDelete();
             $table->integer('stock');
             $table->timestamps();
         });
